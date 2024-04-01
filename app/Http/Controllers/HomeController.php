@@ -61,53 +61,55 @@ class HomeController extends Controller
     }
 
     public function panel(){
-        $oldest_date = $this->report->where('promoter_id', Auth::user()->id)->oldest('date')->first()->date;
-        $latest_date = $this->report->where('promoter_id', Auth::user()->id)->latest('date')->first()->date;
-        $oldest_year = date('Y', strtotime($oldest_date));
-        $latest_year = date('Y', strtotime($latest_date));
-        $oldest_month = date('m', strtotime($oldest_date));
-        $latest_month = date('m', strtotime($latest_date));
-        
-        $monthly_reports = [];
-        for($year = $latest_year; $year >= $oldest_year; $year--){
-            if($latest_year == $oldest_year){
-                for($month = $latest_month; $month >= $oldest_month; $month--){
-                    $month_name = $year."/".$month;
-                    $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
-                    if($report){
-                        $monthly_reports[$month_name] = $report;
+        if(null !== $this->report->where('promoter_id', Auth::user()->id)->oldest('date')->first()){
+            $oldest_date = $this->report->where('promoter_id', Auth::user()->id)->oldest('date')->first()->date;
+            $latest_date = $this->report->where('promoter_id', Auth::user()->id)->latest('date')->first()->date;
+            $oldest_year = date('Y', strtotime($oldest_date));
+            $latest_year = date('Y', strtotime($latest_date));
+            $oldest_month = date('m', strtotime($oldest_date));
+            $latest_month = date('m', strtotime($latest_date));
+            
+            $monthly_reports = [];
+            for($year = $latest_year; $year >= $oldest_year; $year--){
+                if($latest_year == $oldest_year){
+                    for($month = $latest_month; $month >= $oldest_month; $month--){
+                        $month_name = $year."/".$month;
+                        $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
+                        if($report){
+                            $monthly_reports[$month_name] = $report;
+                        }
                     }
-                }
-            }elseif($year == $latest_year){
-                for($month = $latest_month; $month >= 1; $month--){
-                    $month_name = $year."/".$month;
-                    $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
-                    if($report){
-                        $monthly_reports[$month_name] = $report;
+                }elseif($year == $latest_year){
+                    for($month = $latest_month; $month >= 1; $month--){
+                        $month_name = $year."/".$month;
+                        $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
+                        if($report){
+                            $monthly_reports[$month_name] = $report;
+                        }
                     }
-                }
-            }elseif($year == $oldest_year){
-                for($month = 12; $month >= $oldest_month; $month--){
-                    $month_name = $year."/".$month;
-                    $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
-                    if($report){
-                        $monthly_reports[$month_name] = $report;
+                }elseif($year == $oldest_year){
+                    for($month = 12; $month >= $oldest_month; $month--){
+                        $month_name = $year."/".$month;
+                        $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
+                        if($report){
+                            $monthly_reports[$month_name] = $report;
+                        }
                     }
-                }
-            }else{
-                for($month = 12; $month >= 1; $month--){
-                    $month_name = $year."/".$month;
-                    $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
-                    if($report){
-                        $monthly_reports[$month_name] = $report;
+                }else{
+                    for($month = 12; $month >= 1; $month--){
+                        $month_name = $year."/".$month;
+                        $report = $this->report->where('promoter_id', Auth::user()->id)->whereYear('date', $year)->whereMonth('date', $month)->get();
+                        if($report){
+                            $monthly_reports[$month_name] = $report;
+                        }
                     }
                 }
             }
+            $all_places = $this->place->all();
+
+            return view('promoter.panel')->with('monthly_reports', $monthly_reports)->with('all_places', $all_places);
+        }else{
+            return redirect()->route('index');
         }
-        $all_places = $this->place->all();
-
-        return view('promoter.panel')->with('monthly_reports', $monthly_reports)->with('all_places', $all_places);
     }
-
-
 }

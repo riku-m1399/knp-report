@@ -66,6 +66,7 @@
                                 <a href="{{ route('index') }}" class="nav-link"><i class="fa-solid fa-house icon-sm"></i></a>
                             </li>
 
+                            {{-- Panel --}}
                             <li class="nav-item">
                                 <a href="{{ route('panel') }}" class="nav-link"><i class="fa-solid fa-file icon-sm"></i></a>
                             </li>
