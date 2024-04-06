@@ -35,7 +35,7 @@
 
               {{-- Date select --}}
               <div class="mb-5">
-                <label for="date" class="form-label fw-fold">Date</label>
+                <label for="date" class="form-label fw-bold">Date</label>
                 <div class="mb-1">
                     <input type="date" class="form-control" name="date_start">
                 </div>
@@ -145,17 +145,20 @@
                             // calculate income by the promoter
                             $income += $place->fee * $count_entries;
 
-                            // add total
+                            // add total entries
                             if(isset($total_entries[$place->id])){
                               $total_entries[$place->id] += $count_entries;
                             }else{
                               $total_entries[$place->id] = $count_entries;
                             }
-                            $total_income += $income;
                         @endphp
                         <td>{{ $count_entries }}</td>
                       @endforeach
                       <td>{{ $income }}</td>
+                      @php
+                          // add total income
+                          $total_income += $income;
+                      @endphp
                     </tr>
                 @endforeach
                 <tr>
